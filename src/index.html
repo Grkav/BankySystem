@@ -89,7 +89,7 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Balance Card -->
+        <!-- Card de Saldo -->
         <div class="mb-8">
             <div class="balance-card rounded-xl p-6 text-white card-hover">
                 <div class="flex justify-between items-start">
@@ -105,7 +105,7 @@
             </div>
         </div>
 
-        <!-- Quick Actions -->
+        <!-- Cards de Ações -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <button class="bg-white p-4 rounded-lg shadow-sm border card-hover text-center" onclick="openModal('depositModal')">
                 <i class="fas fa-plus-circle text-green-500 text-2xl mb-2"></i>
@@ -125,7 +125,7 @@
             </button>
         </div>
 
-        <!-- Transactions -->
+        <!-- Transações -->
         <div class="bg-white rounded-lg shadow-sm border">
             <div class="p-6 border-b">
                 <div class="flex justify-between items-center">
@@ -134,12 +134,110 @@
                 </div>
             </div>
             <div class="divide-y" id="transactionsList">
-                <!-- Transactions will be populated by JavaScript -->
+                <!-- Lista de Transações  -->
             </div>
         </div>
     </main>
 
+    <!-- Modal Deposito -->
+    <div id="depositModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Fazer Depósito</h3>
+                <button onclick="closeModal('depositModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="handleDeposit(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Valor</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-gray-500">R$</span>
+                        <input type="number" step="0.01" min="0.01" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="0,00" required>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Descrição (opcional)</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Salário, Freelance...">
+                </div>
+                <div class="flex space-x-3">
+                    <button type="button" onclick="closeModal('depositModal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Depositar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <!-- Modal Transferir -->
+    <div id="transferModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Fazer Transferência</h3>
+                <button onclick="closeModal('transferModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="handleTransfer(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Destinatário</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Nome ou CPF" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Valor</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-gray-500">R$</span>
+                        <input type="number" step="0.01" min="0.01" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="0,00" required>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Motivo da transferência" required>
+                </div>
+                <div class="flex space-x-3">
+                    <button type="button" onclick="closeModal('transferModal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Transferir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Pagamentos -->
+    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Fazer Pagamento</h3>
+                <button onclick="closeModal('paymentModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="handlePayment(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Código de Barras ou PIX</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Cole aqui o código" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Valor</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-gray-500">R$</span>
+                        <input type="number" step="0.01" min="0.01" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="0,00" required>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ex: Conta de luz, Internet..." required>
+                </div>
+                <div class="flex space-x-3">
+                    <button type="button" onclick="closeModal('paymentModal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Pagar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notificações -->
+    <div id="notificationsContainer" class="fixed top-4 right-4 z-50 space-y-2">
+        
+    </div>
 <script src="script.js"></script>
 </body>
 </html>

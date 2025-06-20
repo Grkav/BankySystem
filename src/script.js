@@ -1,5 +1,4 @@
-
-        // Global variables
+        // Variáveis globais
         let currentBalance = 0;
         let balanceVisible = true;
         let transactions = [
@@ -45,16 +44,16 @@
             }
         ];
 
-        // Initialize the application
+        // Inicializa a aplicação
         document.addEventListener('DOMContentLoaded', function() {
             updateBalance();
             renderTransactions();
             
-            // Toggle balance visibility
+            // Alternar visibilidade do saldo
             document.getElementById('toggleBalance').addEventListener('click', toggleBalanceVisibility);
         });
 
-        // Modal functions
+        // Funções de modal
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.classList.remove('hidden');
@@ -67,7 +66,7 @@
             modal.classList.remove('flex');
         }
 
-        // Balance functions
+        // Funções de saldo
         function updateBalance() {
             const balanceElement = document.getElementById('balance');
             if (balanceVisible) {
@@ -85,7 +84,7 @@
             icon.className = balanceVisible ? 'fas fa-eye text-white/80 text-xl cursor-pointer hover:text-white' : 'fas fa-eye-slash text-white/80 text-xl cursor-pointer hover:text-white';
         }
 
-        // Transaction functions
+        // Funções de transações
         function renderTransactions() {
             const container = document.getElementById('transactionsList');
             container.innerHTML = '';
@@ -161,14 +160,14 @@
             }
         }
 
-        // Form handlers
+        // Manipuladores de formulário
         function handleDeposit(event) {
             event.preventDefault();
             const form = event.target;
             const amount = parseFloat(form.querySelector('input[type="number"]').value);
             const description = form.querySelector('input[type="text"]').value || 'Depósito';
             
-            // Add transaction
+            // Adiciona transação
             const newTransaction = {
                 id: Date.now(),
                 type: 'deposit',
@@ -181,12 +180,12 @@
             transactions.unshift(newTransaction);
             currentBalance += amount;
             
-            // Update UI
+            // Atualiza UI
             updateBalance();
             renderTransactions();
             showNotification('Depósito realizado com sucesso!', 'success');
             
-            // Close modal and reset form
+            // Fecha modal e limpa formulário
             closeModal('depositModal');
             form.reset();
         }
@@ -203,7 +202,7 @@
                 return;
             }
             
-            // Add transaction
+            // Adiciona transação
             const newTransaction = {
                 id: Date.now(),
                 type: 'transfer',
@@ -216,12 +215,12 @@
             transactions.unshift(newTransaction);
             currentBalance -= amount;
             
-            // Update UI
+            // Atualiza UI
             updateBalance();
             renderTransactions();
             showNotification('Transferência realizada com sucesso!', 'success');
             
-            // Close modal and reset form
+            // Fecha modal e limpa formulário
             closeModal('transferModal');
             form.reset();
         }
@@ -238,7 +237,7 @@
                 return;
             }
             
-            // Add transaction
+            // Adiciona transação
             const newTransaction = {
                 id: Date.now(),
                 type: 'payment',
@@ -251,17 +250,17 @@
             transactions.unshift(newTransaction);
             currentBalance -= amount;
             
-            // Update UI
+            // Atualiza UI
             updateBalance();
             renderTransactions();
             showNotification('Pagamento realizado com sucesso!', 'success');
             
-            // Close modal and reset form
+            // Fecha modal e limpa formulário
             closeModal('paymentModal');
             form.reset();
         }
 
-        // Notification system
+        // Sistema de notificações
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notificationsContainer');
             const notification = document.createElement('div');
@@ -291,7 +290,7 @@
             
             container.appendChild(notification);
             
-            // Auto remove after 5 seconds
+            // Remove automaticamente após 5 segundos
             setTimeout(() => {
                 if (notification.parentNode) {
                     removeNotification(notification.querySelector('button'));
@@ -309,7 +308,7 @@
             }, 300);
         }
 
-        // Close modals when clicking outside
+        // Fecha modais ao clicar fora
         document.addEventListener('click', function(event) {
             const modals = ['depositModal', 'transferModal', 'paymentModal'];
             modals.forEach(modalId => {
@@ -320,7 +319,7 @@
             });
         });
 
-        // Close modals with Escape key
+        // Fecha modais com tecla Esc
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 const modals = ['depositModal', 'transferModal', 'paymentModal'];
