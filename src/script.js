@@ -191,3 +191,144 @@
             form.reset();
         }
 
+        function handleTransfer(event) {
+            event.preventDefault();
+            const form = event.target;
+            const recipient = form.querySelector('input[type="text"]').value;
+            const amount = parseFloat(form.querySelectorAll('input[type="number"]')[0].value);
+            const description = form.querySelectorAll('input[type="text"]')[1].value;
+            
+            if (amount > currentBalance) {
+                showNotification('Saldo insuficiente para esta transferência!', 'error');
+                return;
+            }
+            
+            // Add transaction
+            const newTransaction = {
+                id: Date.now(),
+                type: 'transfer',
+                description: `Transferência para ${recipient} - ${description}`,
+                amount: -amount,
+                date: new Date(),
+                status: 'completed'
+            };
+            
+            transactions.unshift(newTransaction);
+            currentBalance -= amount;
+            
+            // Update UI
+            updateBalance();
+            renderTransactions();
+            showNotification('Transferência realizada com sucesso!', 'success');
+            
+            // Close modal and reset form
+            closeModal('transferModal');
+            form.reset();
+        }
+
+        function handlePayment(event) {
+            event.preventDefault();
+            const form = event.target;
+            const code = form.querySelector('input[type="text"]').value;
+            const amount = parseFloat(form.querySelector('input[type="number"]').value);
+            const description = form.querySelectorAll('input[type="text"]')[1].value;
+            
+            if (amount > currentBalance) {
+                showNotification('Saldo insuficiente para este pagamento!', 'error');
+                return;
+            }
+            
+            // Add transaction
+            const newTransaction = {
+                id: Date.now(),
+                type: 'payment',
+                description: description,
+                amount: -amount,
+                date: new Date(),
+                status: 'completed'
+            };
+            
+            transactions.unshift(newTransaction);
+            currentBalance -= amount;
+            
+            // Update UI
+            updateBalance();
+            renderTransactions();
+            showNotification('Pagamento realizado com sucesso!', 'success');
+            
+            // Close modal and reset form
+            closeModal('paymentModal');
+            form.reset();
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationsContainer');
+            const notification = document.createElement('div');
+            
+            const colors = {
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'info': 'bg-blue-500',
+                'warning': 'bg-yellow-500'
+            };
+            
+            const icons = {
+                'success': 'fas fa-check-circle',
+                'error': 'fas fa-exclamation-circle',
+                'info': 'fas fa-info-circle',
+                'warning': 'fas fa-exclamation-triangle'
+            };
+            
+            notification.className = `notification ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 min-w-80`;
+            notification.innerHTML = `
+                <i class="${icons[type]}"></i>
+                <span class="text-sm font-medium">${message}</span>
+                <button onclick="removeNotification(this)" class="ml-auto text-white/80 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    removeNotification(notification.querySelector('button'));
+                }
+            }, 5000);
+        }
+
+        function removeNotification(button) {
+            const notification = button.closest('.notification');
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(event) {
+            const modals = ['depositModal', 'transferModal', 'paymentModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    closeModal(modalId);
+                }
+            });
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = ['depositModal', 'transferModal', 'paymentModal'];
+                modals.forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (!modal.classList.contains('hidden')) {
+                        closeModal(modalId);
+                    }
+                });
+            }
+        });
